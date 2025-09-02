@@ -27,23 +27,108 @@ You want to follow the Open/Closed Principle, open for extension, closed for mod
 
 //Instead of above, we can separate what to create logic and how to use it!
 
-import javax.management.Notification;
+// import javax.management.Notification;
 
-class SimpleNotificationFactory {
-    public static Notification createNotification(String type){
-        return switch(type){
-            case "Email" -> new EmailNotification();
-            case "SMS" -> new SMSNotification();
-            case "PUSH" -> new PushNotification();
-            default -> throw new IllegalArgumentException("Unknown type");
-        };
+// class SimpleNotificationFactory {
+//     public static Notification createNotification(String type){
+//         return switch(type){
+//             case "Email" -> new EmailNotification();
+//             case "SMS" -> new SMSNotification();
+//             case "PUSH" -> new PushNotification();
+//             default -> throw new IllegalArgumentException("Unknown type");
+//         };
+//     }
+// }
+
+// class NotificationService { 
+//     public void sendNotification(String type, String msg){
+//         Notification notification = SimpleNotificationFactory.createNotification(type);
+//         notification.send(msg);
+
+//     }
+// }
+
+//Define the product interface
+interface Notification {
+    public void send(String msg);
+}
+
+//Define Concreate products
+class EmailNotification implements Notification {
+    @Override
+    public void send(String msg){
+        System.out.println("Sending email : "+ msg);
     }
 }
 
-class NotificationService { 
-    public void sendNotification(String type, String msg){
-        Notification notification = SimpleNotificationFactory.createNotification(type);
+class SMSNotification implements Notification {
+    @Override
+    public void send(String msg){
+        System.out.println("Sending SMS: " + msg);
+    }
+}
+
+class PushNotification implements Notification {
+    @Override
+    public void send(String message) {
+        System.out.println("Sending push notification: " + message);
+    }
+}
+
+class SlackNotification implements Notification {
+    @Override
+    public void send(String message) {
+        System.out.println("Sending SLACK: " + message);
+    }
+}
+
+//Define abstract Creator
+abstract class NotificationCreator {
+    //Factory Method
+    public abstract Notification createNotification();
+
+    //Common logic using the factory method
+    public void send(String msg){
+        Notification notification = createNotification();
         notification.send(msg);
-
     }
 }
+
+//Above class is use to define the flow!
+
+class EmailNotificationCreator extends NotificationCreator {
+    @Override
+    public Notification createNotification(){
+        return new EmailNotification();
+    }
+}
+
+class SMSNotificationCreator extends NotificationCreator {
+    @Override
+    public Notification createNotification(){
+        return new SMSNotification();
+    }
+}
+
+class PushNotificationCreator extends NotificationCreator {
+    @Override
+    public Notification createNotification() {
+        return new PushNotification();
+    }
+}
+
+
+public class factoryMethod {
+    public static void main(String[] args) {
+        NotificationCreator creator;
+        creator = new EmailNotificationCreator();
+        creator.send("hi");
+
+        creator = new PushNotificationCreator();
+        creator.send("hello!");
+    }
+}
+
+
+
+
