@@ -19,7 +19,7 @@ class SimpleCoffee implements Coffee {
 
 // 3. Abstract Decorator
 abstract class CoffeeDecorator implements Coffee {
-    protected Coffee decoratedCoffee;
+    protected final Coffee decoratedCoffee;
 
     public CoffeeDecorator(Coffee coffee) {
         this.decoratedCoffee = coffee;
@@ -44,12 +44,12 @@ class MilkDecorator extends CoffeeDecorator {
 
     @Override
     public double getCost() {
-        return super.getCost() + 1.5; // Add cost of milk
+        return decoratedCoffee.getCost() + 1.5; // Add cost of milk
     }
 
     @Override
     public String getDescription() {
-        return super.getDescription() + ", with Milk"; // Add milk to description
+        return decoratedCoffee.getDescription() + ", with Milk"; // Add milk to description
     }
 }
 
